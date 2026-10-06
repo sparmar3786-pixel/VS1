@@ -21,11 +21,6 @@ jobs:
       - name: Install Android SDK packages
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
       - run: npm install --no-audit --no-fund
-      - name: Prepare VS1 APK resources
-        run: |
-          mkdir -p www/assets
-          dd if=/dev/urandom of=www/assets/vs1-resources.bin bs=1M count=80 status=progress
-          ls -lh www/assets/vs1-resources.bin
       - run: npx cap add android
       - run: npx cap sync android
       - name: Build Debug APK
@@ -37,8 +32,8 @@ jobs:
           ls -lh "$APK"
           SIZE=$(stat -c%s "$APK")
           echo "APK_BYTES=$SIZE"
-          test "$SIZE" -ge 73400320
+          test "$SIZE" -le 20971520
       - uses: actions/upload-artifact@v4
         with:
-          name: VS1-70MB-debug-apk
+          name: VS1-under-20MB-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
